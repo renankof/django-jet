@@ -99,6 +99,8 @@ RelatedPopups.prototype = {
         });
     },
     showPopup: function($input, href) {
+        console.log("ShowPopup");
+        alert("ShowPopUP");
         var $document = $(window.top.document);
         var $container = $document.find('.related-popup-container');
         var $loading = $container.find('.loading-indicator');
