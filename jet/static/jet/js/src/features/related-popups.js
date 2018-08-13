@@ -201,9 +201,12 @@ RelatedPopups.prototype = {
                         .trigger('change')
                         .trigger('select:init');
                 } else if ($input.is('input.vManyToManyRawIdAdminField') && $input.val()) {
-                    $input.val($input.val() + ',' + response.value);
+                    $input.val($input.val() + ',' + response.value).trigger('change');
+    
                 } else if ($input.is('input')) {
-                    $input.val(response.value);
+                    $input.val(response.value).trigger('change');
+                    console.log("oi eu sou um input");
+                    console.log(response.value);
                 }
 
                 break;
