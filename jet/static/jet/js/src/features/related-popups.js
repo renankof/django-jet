@@ -99,8 +99,6 @@ RelatedPopups.prototype = {
         });
     },
     showPopup: function($input, href) {
-        console.log("ShowPopup");
-        alert("ShowPopUP");
         var $document = $(window.top.document);
         var $container = $document.find('.related-popup-container');
         var $loading = $container.find('.loading-indicator');
@@ -130,12 +128,12 @@ RelatedPopups.prototype = {
 
         (function($) {
             var $document = $(window.top.document);
+            var $window = $(window.top.window);
             var $popups = $document.find('.related-popup');
             var $container = $document.find('.related-popup-container');
             var $popup = $popups.last();
-
             if (response != undefined) {
-                self.processPopupResponse($popup, response);
+                self.processPopupResponse($popup, response, $window);
             }
 
             self.windowStorage.pop();
@@ -162,9 +160,8 @@ RelatedPopups.prototype = {
             self.closePopup(response);
         });
     },
-    processPopupResponse: function($popup, response) {
+    processPopupResponse: function($popup, response, $window) {
         var $input = $popup.data('input');
-
         switch (response.action) {
             case 'change':
                 $input.find('option').each(function() {
@@ -202,15 +199,16 @@ RelatedPopups.prototype = {
                     $input
                         .trigger('change')
                         .trigger('select:init');
+                    
                 } else if ($input.is('input.vManyToManyRawIdAdminField') && $input.val()) {
-                    $input.val($input.val() + ',' + response.value).trigger('change');
-    
+                    $input.val($input.val() + ',' + response.value);
+                    // fix event in original window
+                    $window[0].django.jQuery('#'+$input.context.id).trigger('change');
                 } else if ($input.is('input')) {
-                    $input.val(response.value).trigger('change');
-                    console.log("oi eu sou um input");
-                    console.log(response.value);
+                    $input.val(response.value);
+                    // fix event in original window
+                    $window[0].django.jQuery('#'+$input.context.id).trigger('change');
                 }
-
                 break;
         }
     },
